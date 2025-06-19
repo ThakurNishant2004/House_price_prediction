@@ -6,18 +6,7 @@ from PIL import Image
 from pathlib import Path
 import io
 
-# Load model, scaler, and column names
-@st.cache_resource
-def load_artifacts():
-    with open("model.pkl", "rb") as f:
-        model = pickle.load(f)
-    with open("scaler.pkl", "rb") as f:
-        scaler = pickle.load(f)
-    columns = pickle.load(open("columns.pkl", "rb"))
-    return model, scaler, columns
-
-model, scaler, columns = load_artifacts()
-
+# ✅ This must come first — before any other st command
 # App Configuration
 st.set_page_config(
     page_title="House Price Predictor",
@@ -25,6 +14,23 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# # Now you can use other Streamlit commands
+# st.title("House Price Prediction App")
+
+# Load model, scaler, and column names
+@st.cache_resource
+def load_artifacts():
+    with open("./model.pkl", "rb") as f:
+        model = pickle.load(f)
+    with open("./scaler.pkl", "rb") as f:
+        scaler = pickle.load(f)
+    columns = pickle.load(open("./columns.pkl", "rb"))
+    return model, scaler, columns
+
+model, scaler, columns = load_artifacts()
+
+
 
 # Custom CSS for better styling
 st.markdown("""
