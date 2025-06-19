@@ -9,8 +9,10 @@ import io
 # Load model, scaler, and column names
 @st.cache_resource
 def load_artifacts():
-    model = pickle.load(open("model.pkl", "rb"))
-    scaler = pickle.load(open("scaler.pkl", "rb"))
+    with open("model.pkl", "rb") as f:
+        model = pickle.load(f)
+    with open("scaler.pkl", "rb") as f:
+        scaler = pickle.load(f)
     columns = pickle.load(open("columns.pkl", "rb"))
     return model, scaler, columns
 
