@@ -155,3 +155,83 @@ with col2:
         value="Good",
         help="General state of the property"
     )
+
+    
+# Additional features in expandable section
+with st.expander("Additional Features", expanded=False):
+    st.subheader("Amenities & Other Features")
+    col3, col4 = st.columns(2)
+    
+    with col3:
+        furnishing = st.radio("Furnishing Status", 
+                            ("Unfurnished", "Semi-Furnished", "Furnished"),
+                            horizontal=True)
+        parking = st.checkbox("Parking Available")
+        
+    with col4:
+        preferred_area = st.checkbox("Preferred Location")
+        main_road = st.checkbox("Facing Main Road")
+
+# Prepare input data
+input_data = {
+    'area': area,
+    'price_per_sq_feet_area': price_per_sqft,
+    'total_rooms': bedrooms + bathrooms,  # Assuming total_rooms includes both
+    'age': age,
+    'furnishingstatus_furnished': 1 if furnishing == "Furnished" else 0,
+    'furnishingstatus_semi-furnished': 1 if furnishing == "Semi-Furnished" else 0,
+    'furnishingstatus_unfurnished': 1 if furnishing == "Unfurnished" else 0,
+    'prefarea_yes': 1 if preferred_area else 0,
+    # Add other binary features based on your model requirements
+}
+
+# Ensure all columns are present (fill missing with 0)
+for col in columns:
+    if col not in input_data:
+        input_data[col] = 0
+
+# Convert to DataFrame and scale
+input_df = pd.DataFrame([input_data])[columns]  # Ensure correct column order
+input_scaled = scaler.transform(input_df)
+
+# Prediction button with better layout
+st.markdown("---")
+col_btn1, col_btn2, col_btn3 = st.columns([1,2,1])
+with col_btn2:
+    predict_btn = st.button("Predict House Price", use_container_width=True)
+
+# Display results
+if predict_btn:
+    with st.spinner('Calculating estimated price...'):
+        prediction = model.predict(input_scaled)[0]
+        
+        # Format the price with commas and add currency symbol
+        formatted_price = f"₹ {int(prediction):,}"
+        
+        # Display with nice styling
+        st.markdown(f"""
+        <div style='text-align: center; margin-top: 20px;'>
+            <h3 style='color: #2c3e50;'>Estimated House Price:</h3>
+            <div style='font-size: 32px; color: #4CAF50; font-weight: bold;'>
+                {formatted_price}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Additional info based on price
+        st.markdown("---")
+        if prediction > 5000000:
+            st.info("💎 This is a premium property. Consider comparing with similar listings in the area.")
+        elif prediction > 2000000:
+            st.info("🏡 This is a mid-range property. Good value for the features offered.")
+        else:
+            st.info("📈 This is an affordable property. Potential for good returns on investment.")
+
+# Add footer
+st.markdown("---")
+st.markdown("""
+    <div style='text-align: center; color: #7f8c8d;'>
+        <p>Note: This prediction is an estimate based on the provided features.</p>
+        <p>For accurate valuation, consult with a real estate professional.</p>
+    </div>
+""", unsafe_allow_html=True)
