@@ -21,13 +21,14 @@ st.set_page_config(
 # Load model, scaler, and column names
 @st.cache_resource
 def load_artifacts():
-    with open("./model.pkl", "rb") as f:
+    base_path = Path(__file__).parent
+    with open(base_path / "model.pkl", "rb") as f:
         model = pickle.load(f)
-    with open("./scaler.pkl", "rb") as f:
+    with open(base_path / "scaler.pkl", "rb") as f:
         scaler = pickle.load(f)
-    columns = pickle.load(open("./columns.pkl", "rb"))
+    with open(base_path / "columns.pkl", "rb") as f:
+        columns = pickle.load(f)
     return model, scaler, columns
-
 model, scaler, columns = load_artifacts()
 
 
