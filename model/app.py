@@ -33,9 +33,10 @@ st.set_page_config(
 
 @st.cache_resource
 def load_artifacts():
-    model = joblib.load("model.pkl")
-    scaler = joblib.load("scaler.pkl")
-    columns = joblib.load("columns.pkl")  # if it's a list, this can stay with pickle
+    base_path = Path(__file__).parent
+    model = joblib.load(base_path / "model.pkl")
+    scaler = joblib.load(base_path / "scaler.pkl")
+    columns = joblib.load(base_path / "columns.pkl")
     return model, scaler, columns
 model, scaler, columns = load_artifacts()
 
