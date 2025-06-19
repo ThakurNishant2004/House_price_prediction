@@ -4,6 +4,7 @@ import pickle
 import pandas as pd
 from PIL import Image
 from pathlib import Path
+import joblib
 import io
 
 # ✅ This must come first — before any other st command
@@ -19,15 +20,22 @@ st.set_page_config(
 # st.title("House Price Prediction App")
 
 # Load model, scaler, and column names
+# @st.cache_resource
+# def load_artifacts():
+#     base_path = Path(__file__).parent
+#     with open(base_path / "model.pkl", "rb") as f:
+#         model = pickle.load(f)
+#     with open(base_path / "scaler.pkl", "rb") as f:
+#         scaler = pickle.load(f)
+#     with open(base_path / "columns.pkl", "rb") as f:
+#         columns = pickle.load(f)
+#     return model, scaler, columns
+
 @st.cache_resource
 def load_artifacts():
-    base_path = Path(__file__).parent
-    with open(base_path / "model.pkl", "rb") as f:
-        model = pickle.load(f)
-    with open(base_path / "scaler.pkl", "rb") as f:
-        scaler = pickle.load(f)
-    with open(base_path / "columns.pkl", "rb") as f:
-        columns = pickle.load(f)
+    model = joblib.load("model.pkl")
+    scaler = joblib.load("scaler.pkl")
+    columns = joblib.load("columns.pkl")  # if it's a list, this can stay with pickle
     return model, scaler, columns
 model, scaler, columns = load_artifacts()
 
