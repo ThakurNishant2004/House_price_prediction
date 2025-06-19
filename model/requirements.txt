@@ -1,0 +1,12 @@
+streamlit
+scikit-learn
+pandas
+numpy
+joblib
+Pillow
+matplotlib
+seabornshap
+lime
+PIL
+pickle
+pathlib
